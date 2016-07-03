@@ -3,7 +3,7 @@ var router = express.Router();
 
 var bcrypt = require('bcrypt');
 
-/* GET login */
+/* POST login */
 
 router.post('/login', function (req, res, next) {
 
