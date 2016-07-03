@@ -12,6 +12,7 @@ router.post('/v1', function (req, res, next) {
     one_liner.message = req.body.message;
     one_liner.author = req.body.author;
     one_liner.popularity = 0;
+    one_liner.timestamp = Date.now();
 
     var err = [];
     var db = req.db;
@@ -54,5 +55,21 @@ router.get('/v1', function (req, res, next) {
     });
     
 });
+
+router.patch('/v1/upvote', function (req, res, next) {
+    var id_string = req.body.id;
+    var _id = new req.ObjectID(id_string);
+
+    var one_liner = req.db.collection('one_liners').update({'_id': _id}, {$inc: {'popularity': 1}}, function (err, doc) {
+        if(err){
+            res.send(err);
+        } else {
+            res.send(doc);
+        }
+    });
+
+});
+
+
 
 module.exports = router;

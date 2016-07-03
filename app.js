@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var MongoClient = require('mongodb').MongoClient;
+var ObjectID = require('mongodb').ObjectID;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -38,6 +39,7 @@ MongoClient.connect("mongodb://localhost:27017/data_db", function (err, db) {
 
     app.use(function (req, res, next) {
       req.db = db;
+      req.ObjectID = ObjectID;
       next();
     });
 
