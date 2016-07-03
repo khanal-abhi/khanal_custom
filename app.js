@@ -34,6 +34,13 @@ MongoClient.connect("mongodb://localhost:27017/data_db", function (err, db) {
   } else {
     console.log("connection established successfully!");
 
+    // add the db connection
+
+    app.use(function (req, res, next) {
+      req.db = db;
+      next();
+    });
+
     app.use('/', routes);
     app.use('/users', users);
     app.use('/api', api);
@@ -45,12 +52,7 @@ MongoClient.connect("mongodb://localhost:27017/data_db", function (err, db) {
       next(err);
     });
 
-    // add the db connection
 
-    app.use(function (req, res, next) {
-      req.db = db;
-      next();
-    });
 // error handlers
 
 // development error handler
