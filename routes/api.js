@@ -99,6 +99,54 @@ router.patch('/v1/downvote', function (req, res, next) {
 
 });
 
+/* GET filtered */
+// TODO: add an endpoint that lets users filter the messages
+
+router.get('/v1/filtered', function (req, res, next) {
+    var filter = req.query.filter;
+    console.log(filter);
+
+    if(!filter || filter == ""){
+        res.send({
+            'result': 'unsuccessful',
+            'error': 'no filter used'
+        });
+    } else if (['popularity', 'reverse_popularity', 'earliest', 'latest'].indexOf(filter) != -1){
+
+        switch (filter){
+            case 'popularity':
+                req.db.collection('one_liners').find({}).sort({'popularity': -1}).toArray(function(err, docs){
+                    res.send(docs);
+                });
+                break;
+
+            case 'reverse_popularity':
+                req.db.collection('one_liners').find({}).sort({'popularity': 1}).toArray(function(err, docs){
+                    res.send(docs);
+                });
+                break;
+
+            case 'earliest':
+                req.db.collection('one_liners').find({}).sort({'timestamp': 1}).toArray(function(err, docs){
+                    res.send(docs);
+                });
+                break;
+
+            case 'latest':
+                req.db.collection('one_liners').find({}).sort({'timestamp': -1}).toArray(function(err, docs){
+                    res.send(docs);
+                });
+                break;
+        }
+
+    } else {
+        res.send({
+            'result': 'unsuccessful',
+            'error': 'invalid filter'
+        });
+    }
+});
+
 
 
 module.exports = router;
