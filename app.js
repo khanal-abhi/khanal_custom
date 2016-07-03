@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('client-sessions');
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
@@ -24,6 +25,14 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(session({
+  cookieName: 'demo_session',
+  secret: 'ASCACD!#RH%&H*K',
+  duration: 30 * 60 * 1000,
+  activeDuration: 5 * 60 * 1000
+}));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 

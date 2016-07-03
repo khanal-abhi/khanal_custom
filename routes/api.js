@@ -56,11 +56,29 @@ router.get('/v1', function (req, res, next) {
     
 });
 
+/* UPVOTE PATCH */
+
 router.patch('/v1/upvote', function (req, res, next) {
     var id_string = req.body.id;
     var _id = new req.ObjectID(id_string);
 
     var one_liner = req.db.collection('one_liners').update({'_id': _id}, {$inc: {'popularity': 1}}, function (err, doc) {
+        if(err){
+            res.send(err);
+        } else {
+            res.send(doc);
+        }
+    });
+
+});
+
+/* DOWNVOTE PATCH */
+
+router.patch('/v1/downvote', function (req, res, next) {
+    var id_string = req.body.id;
+    var _id = new req.ObjectID(id_string);
+
+    var one_liner = req.db.collection('one_liners').update({'_id': _id}, {$inc: {'popularity': -1}}, function (err, doc) {
         if(err){
             res.send(err);
         } else {
