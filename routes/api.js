@@ -7,7 +7,7 @@ var router = express.Router();
 
 /* POST one_liner */
 
-router.post('/v1', function (req, res, next) {
+router.post('/v1/new_message', function (req, res, next) {
 
     if(req.session && req.session.user) {
         var one_liner = {};
@@ -56,7 +56,7 @@ router.post('/v1', function (req, res, next) {
 
 /* GET one_liner */
 
-router.get('/v1', function (req, res, next) {
+router.get('/v1/messages', function (req, res, next) {
 
     var db = req.db;
     var one_liners = db.collection("one_liners");
