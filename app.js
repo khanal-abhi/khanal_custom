@@ -40,7 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-MongoClient.connect("mongodb://localhost:27017/data_db", function (err, db) {
+MongoClient.connect("mongodb://data:somedata@ds011775.mlab.com:11775/data", function (err, db) {
 // MongoClient.connect("mongodb://localhost:27017/data_db", function (err, db) {
   if(err){
     console.println("error connecting to the database!");
