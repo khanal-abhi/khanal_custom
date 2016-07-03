@@ -21,6 +21,7 @@ router.post('/login', function (req, res, next) {
            } else {
                var match = bcrypt.compareSync(password, doc.password);
                if(match){
+                   user.password = null;
                    req.session.user = user;
                    res.send(
                        {
@@ -45,6 +46,56 @@ router.post('/login', function (req, res, next) {
         });
     });
 
+
+});
+
+/* POST /signup */
+
+router.post('/signup', function (req, res, next) {
+
+    var username = req.body.username;
+    var email = req.body.email;
+    var password = req.body.password;
+
+    password = bcrypt.hashSync(password, 10);
+    
+    var users = req.db.collection('users');
+    users.findOne({'email': email}, function (err, user) {
+
+        if(err){
+            console.log(err);
+        } else {
+            if(user == null){
+
+                user.username = username;
+                user.email = email;
+                user.password = password;
+                
+                users.insert(user, function (err, doc) {
+
+                    if(err){
+                        res.send({
+                            'result': 'unsuccessful',
+                            'error': err
+                        });
+                    } else {
+                        res.send({
+                           'result': 'successful',
+                            'data': doc
+                        });
+                    }
+
+                });
+
+            } else {
+                res.send({
+                    'result': 'unsuccessful',
+                    'error': 'duplicate'
+                });
+            }
+        }
+
+    });
 
 });
 
