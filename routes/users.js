@@ -7,44 +7,56 @@ var bcrypt = require('bcrypt');
 
 router.post('/login', function (req, res, next) {
 
-    var username = req.body.username;
-    var password = req.body.password;
+    console.log(req.session);
 
-    var error = [];
-
-    var users = req.db.collections('users').findOne({'username': username}, function (err, user) {
-       if(err){
-           error.push(err);
-       } else {
-           if(user == null){
-               error.push("mismatch");
-           } else {
-               var match = bcrypt.compareSync(password, doc.password);
-               if(match){
-                   user.password = null;
-                   req.session.user = user;
-                   res.send(
-                       {
-                           'result': 'successfull',
-                           'user': {
-                               'username': user.username,
-                               'email': user.email
-                           }
-                       }
-                   );
-               } else {
-                   error.push("mismatch");
-               }
-           }
-       }
-
-        req.session.user = null;
-
+    if(req.session && req.session.user){
+        console.log('dangerzone');
         res.send({
             'result': 'unsuccessful',
-            'error': error
+            'error': 'already logged in'
         });
-    });
+    } else {
+
+        var username = req.body.username;
+        var password = req.body.password;
+
+        var error = [];
+
+        var users = req.db.collection('users').findOne({'username': username}, function (err, user) {
+            if (err) {
+                error.push(err);
+            } else {
+                if (user == null) {
+                    error.push("mismatch");
+                } else {
+                    var match = bcrypt.compareSync(password, user.password);
+                    if (match) {
+                        user.password = null;
+                        req.session.user = user;
+                        res.send(
+                            {
+                                'result': 'successful',
+                                'user': {
+                                    'username': user.username,
+                                    'email': user.email
+                                }
+                            }
+                        );
+                    } else {
+                        error.push("mismatch");
+
+                        req.session.user = null;
+
+                        res.send({
+                            'result': 'unsuccessful',
+                            'error': error
+                        });
+                    }
+                }
+            }
+
+        });
+    }
 
 
 });
@@ -66,6 +78,8 @@ router.post('/signup', function (req, res, next) {
             console.log(err);
         } else {
             if(user == null){
+
+                user = {};
 
                 user.username = username;
                 user.email = email;
@@ -96,6 +110,25 @@ router.post('/signup', function (req, res, next) {
         }
 
     });
+
+});
+
+/* GET logout */
+
+router.get('/logout', function (req, res, next) {
+
+    if(req.session.user){
+        delete req.session.user;
+        req.session.reset();
+        res.send({
+            'result': 'successful',
+        });
+    } else {
+        res.send({
+            'result': 'unsuccessful',
+            'error': 'not logged in'
+        });
+    }
 
 });
 

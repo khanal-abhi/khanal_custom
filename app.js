@@ -27,10 +27,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(session({
-  cookieName: 'demo_session',
+  cookieName: 'session',
   secret: 'ASCACD!#RH%&H*K',
   duration: 30 * 60 * 1000,
-  activeDuration: 5 * 60 * 1000
+  activeDuration: 5 * 60 * 1000,
+  httpOnly: true,
+  secure: true,
+  ephemeral: true
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -43,6 +46,26 @@ MongoClient.connect("mongodb://localhost:27017/data_db", function (err, db) {
     console.println("error connecting to the database!");
   } else {
     console.log("connection established successfully!");
+
+    app.use(function (req, res, next) {
+      if(req.session && req.session.user){
+        var users = db.collection('users');
+        users.findOne({'email': req.session.user.email}, function(err, user){
+          if(err){
+            req.session.user = null;
+          } else {
+            req.user = user;
+            delete req.user.password;
+            req.session.user = user;
+            res.locals.user = user;
+          }
+          next();
+        });
+      } else {
+        req.session = {};
+        next();
+      }
+    });
 
     // add the db connection
 
