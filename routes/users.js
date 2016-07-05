@@ -134,4 +134,21 @@ router.get('/logout', function (req, res, next) {
 
 /* DELETE user */
 
+router.delete('/delete', function(req, res, next){
+    var _id = req.ObjectID(req.body.id);
+    req.db.collection('users').remove({_id: _id}, function (err, user) {
+       if(err){
+           res.send({
+              'result': 'unsuccessful',
+               'error': err
+           });
+       } else {
+           res.send({
+              'result': 'successful',
+               'data': user
+           });
+       }
+    });
+});
+
 module.exports = router;
