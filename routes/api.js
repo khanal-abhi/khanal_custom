@@ -140,8 +140,10 @@ router.get('/v1/filtered', function (req, res, next) {
 
 router.delete('/v1/delete_message', function (req, res, next) {
 
-    var _id = new req.ObjectID(req.body.id);
-    req.db.collection('messages').remove({'_id': _id}, function (err, doc) {
+    var id_string = req.body.id;
+    var _id = new req.ObjectID(id_string);
+
+    var messages = req.db.collection('one_liners').remove({'_id': _id}, function (err, doc) {
        if(err){
            res.send({
               'result': 'unsuccessful',
