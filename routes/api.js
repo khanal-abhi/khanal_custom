@@ -90,7 +90,6 @@ router.patch('/v1/downvote', function (req, res, next) {
 });
 
 /* GET filtered */
-// TODO: add an endpoint that lets users filter the messages
 
 router.get('/v1/filtered', function (req, res, next) {
     var filter = req.query.filter;
@@ -137,6 +136,26 @@ router.get('/v1/filtered', function (req, res, next) {
     }
 });
 
+/* DELETE user */
 
+router.delete('/v1/delete_user', function (req, res, next) {
+
+    var _id = req.ObjectID(req.body.id);
+
+    var users = req.db.collection('users').delete({ _id: _id}, function (err, res) {
+        if(err){
+            res.send({
+               'result': 'unsuccessful',
+                'error': err
+            });
+        } else {
+            res.send({
+               'result': 'successful',
+                'data': res
+            });
+        }
+    });
+
+});
 
 module.exports = router;
