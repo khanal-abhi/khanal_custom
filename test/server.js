@@ -6,13 +6,14 @@ var http = require('http');
 var app = require('../app');
 
 this.server = http.createServer(function (req, res) {
-   res.send({
-       'result': 'successful',
-       'data': {
-           'name': 'test',
-           'status': 200
-       }
-   });
+
+    res.writeHead(200, {'Content-Type': 'application/javascript'});
+    var jres = JSON.stringify({
+        result: "successful"
+    });
+    res.end(jres);
+
+
 });
 
 exports.listen = function(){

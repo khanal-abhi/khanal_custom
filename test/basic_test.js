@@ -13,8 +13,9 @@ describe("server", function () {
 
     describe("should cater to a web request", function () {
         it("should send a response to a web request", function (done) {
-            request('localhost:3000', function (err, res, body) {
-               expect(0).to.equal(res);
+            request('http://localhost:3000', function (err, res, body) {
+                var jasonObject = JSON.parse(body);
+               expect(jasonObject.result).to.equal("successful");
                 done();
             });
         });
