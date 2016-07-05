@@ -9,38 +9,46 @@ var router = express.Router();
 
 router.post('/v1/new_message', function (req, res, next) {
 
-    var one_liner = {};
-    one_liner.message = req.body.message;
-    one_liner.author = req.session.user.username || req.body.author;
-    one_liner.popularity = 0;
-    one_liner.timestamp = Date.now();
+    if(req.session.user == null && req.body.author == null){
+        res.send({
+           'result': 'unsuccessfull',
+            'error': 'author needed'
+        });
+    } else {
 
-    var err = [];
-    var db = req.db;
+        var one_liner = {};
+        one_liner.message = req.body.message;
+        one_liner.author = req.session.user.username || req.body.author;
+        one_liner.popularity = 0;
+        one_liner.timestamp = Date.now();
 
-    if (one_liner.message == null || one_liner.message == "") {
-        err.push("missing message");
-    }
+        var err = [];
+        var db = req.db;
 
-    if (one_liner.author == null || one_liner.author == "") {
-        err.push("missing author");
-    }
-
-    if (err.length > 0) {
-        res.send({'error': err});
-    }
-
-
-    var one_liners = db.collection("one_liners");
-    one_liners.insert(one_liner, function (err, doc) {
-        if (err) {
-            console.log('error saving one liner ' + err);
+        if (one_liner.message == null || one_liner.message == "") {
+            err.push("missing message");
         }
-        else {
-            console.log('saved one_liner successfully!');
-            res.send(one_liner);
+
+        if (one_liner.author == null || one_liner.author == "") {
+            err.push("missing author");
         }
-    });
+
+        if (err.length > 0) {
+            res.send({'error': err});
+        }
+
+
+        var one_liners = db.collection("one_liners");
+        one_liners.insert(one_liner, function (err, doc) {
+            if (err) {
+                console.log('error saving one liner ' + err);
+            }
+            else {
+                console.log('saved one_liner successfully!');
+                res.send(one_liner);
+            }
+        });
+    }
 
 });
 
