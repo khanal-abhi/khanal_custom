@@ -11,7 +11,7 @@ router.post('/v1/new_message', function (req, res, next) {
 
     var one_liner = {};
     one_liner.message = req.body.message;
-    one_liner.author = req.session.user.username;
+    one_liner.author = req.session.user.username || req.body.author;
     one_liner.popularity = 0;
     one_liner.timestamp = Date.now();
 

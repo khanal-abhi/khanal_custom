@@ -13,7 +13,7 @@ describe("server", function () {
 
     describe("should cater to a web request", function () {
         it("should send a response to a web request", function (done) {
-            request('http://localhost:3000', function (err, res, body) {
+            request('http://localhost:3000/api/v1/messages', function (err, res, body) {
                 var jasonObject = JSON.parse(body);
                expect(jasonObject.result).to.equal("successful");
                 done();
