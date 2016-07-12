@@ -37,6 +37,7 @@ router.post('/login', function (req, res, next) {
                             {
                                 'result': 'successful',
                                 'user': {
+                                  'user_ud': user._id,
                                     'username': user.username,
                                     'email': user.email
                                 }
@@ -70,7 +71,7 @@ router.post('/signup', function (req, res, next) {
     var password = req.body.password;
 
     password = bcrypt.hashSync(password, 10);
-    
+
     var users = req.db.collection('users');
     users.findOne({'email': email}, function (err, user) {
 
@@ -84,7 +85,7 @@ router.post('/signup', function (req, res, next) {
                 user.username = username;
                 user.email = email;
                 user.password = password;
-                
+
                 users.insert(user, function (err, doc) {
 
                     if(err){
